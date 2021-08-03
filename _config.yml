@@ -1,0 +1,9 @@
+title: BugHuntr.io Devdocs
+baseurl: ""
+url: "https://dev.bughuntr.io"
+twitter_username: bughuntrio
+github_username: bughuntrio
+
+featured: 5
+excerpt_separator: <!--more-->
+theme: jekyll-theme-cayman

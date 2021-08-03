@@ -1,0 +1,34 @@
+---
+---
+@import "{{ site.theme }}";
+
+// Theme overrides
+.page-header {
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  a {
+    text-decoration: none;
+    color: $header-heading-color;
+  }
+
+  h2 {
+    margin-bottom: 0.2em;
+  }
+}
+
+
+.subpage {
+  position: relative;
+  .header {
+    position: absolute;
+    right: 0px;
+  }
+  .footer {
+    position: absolute;
+    right: 0px;
+  }
+  .content {
+    padding-bottom: 1.5em;
+  }
+}

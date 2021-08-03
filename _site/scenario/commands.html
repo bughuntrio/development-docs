@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+  </head>
+  <body>
+    <header class="page-header" role="banner">
+      <a href="/">
+      <h1 class="project-name">BugHuntr.io Devdocs</h1>
+      <h2 class="project-tagline"></h2>
+      </a>
+    </header>
+    <main id="content" class="main-content" role="main">
+      <div class="subpage">
+  <div class="header">
+    <a href="/">Back to index</a>
+  </div>
+
+  <div class="content">
+    <h2 id="metadata---conf-commands">Metadata - Conf commands</h2>
+
+<p>Scenario commands are run by executors to set up a scenario environment for the user. The <code class="highlighter-rouge">conf.commands</code> key should specify an array of commands to run to set up the environment. Commands are executed synchronously, one after the other.</p>
+
+<p>Commands should specify the following keys:</p>
+<ul>
+  <li><code class="highlighter-rouge">type</code> <em>string</em> Currently there is a single command type <code class="highlighter-rouge">docker</code></li>
+  <li><code class="highlighter-rouge">connect</code> <em>bool</em> Whether to connect a shell to the command input/output
+    <ul>
+      <li>When the <code class="highlighter-rouge">connect</code> value is specified, as per the synchronous execution of commands, the next command will only run once the connected command terminates</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">spec</code> <em>object</em> The command specification, see below</li>
+</ul>
+
+<p>For example to select a <code class="highlighter-rouge">docker</code> command use:</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">conf</span><span class="pi">:</span>
+  <span class="na">commands</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">docker</span>
+      <span class="na">spec</span><span class="pi">:</span>
+        <span class="s">...</span>
+</code></pre></div></div>
+
+<p><strong>Note:</strong> At this time, all scenarios with a <code class="highlighter-rouge">qemu</code> executor which require the use of commands should run a docker daemon bound to <code class="highlighter-rouge">0.0.0.0:2385/tcp</code> with no TLS requirement.</p>
+
+<h3 id="docker-commands">Docker commands</h3>
+
+<h4 id="run">Run</h4>
+
+<p>Run a new container. Run commands can specify the following options in the <code class="highlighter-rouge">conf.commands.spec.run</code> key:</p>
+<ul>
+  <li><code class="highlighter-rouge">image</code> <em>string</em> The container repository URL of an image to run</li>
+  <li><code class="highlighter-rouge">name</code> <em>string</em> The name of the container</li>
+  <li><code class="highlighter-rouge">ports</code> <em>string[]</em> An array of <code class="highlighter-rouge">&lt;host port&gt;:&lt;container port&gt;</code> mapping pairs to map a container port to a host port
+    <ul>
+      <li>See <a href="/scenario/expose.html">Conf expose</a> for further details</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">entrypoint</code> <em>string[]</em> The entrypoint of the container <strong>Default:</strong> The entrypoint specified by the image</li>
+  <li><code class="highlighter-rouge">cmd</code> <em>string[]</em> The command to run in the container entrypoint <strong>Default:</strong> The command specified by the image</li>
+  <li><code class="highlighter-rouge">env</code> <em>string[]</em> The environment of the container <strong>Default:</strong> The environment specified by the image</li>
+  <li><code class="highlighter-rouge">working-dir</code> <em>string</em> The working directory of the container <strong>Default:</strong> The working directory specified by the image</li>
+  <li><code class="highlighter-rouge">tty</code> <em>bool</em> Whether to expose a TTY to the container</li>
+  <li><code class="highlighter-rouge">read-only</code> <em>bool</em> Whether the container file system should be read-only</li>
+  <li><code class="highlighter-rouge">security-opt</code> <em>string[]</em> Security options for the container
+    <ul>
+      <li>The only permitted <code class="highlighter-rouge">security-opt</code> when using the <code class="highlighter-rouge">docker</code> executor is <code class="highlighter-rouge">no-new-privileges</code> which prevents a user from gaining elevated privileges within the container</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">cap-drop</code> <em>string[]</em> Capabilities to drop for execution of the container</li>
+  <li><code class="highlighter-rouge">read-only-paths</code> <em>string[]</em> Read only paths (see the docker run documentation)</li>
+  <li><code class="highlighter-rouge">masked-paths</code> <em>string[]</em> Masked paths (see the docker run documentation)</li>
+</ul>
+
+<p>The following options are only available when running with the <code class="highlighter-rouge">qemu</code> executor:</p>
+<ul>
+  <li><code class="highlighter-rouge">privileged</code> <em>bool</em> Whether the container should run in privileged mode</li>
+  <li><code class="highlighter-rouge">cap-add</code> <em>string[]</em> Capabilities to add for execution of the container</li>
+  <li><code class="highlighter-rouge">security-opt</code> <em>string[]</em> Additional security options for the execution of the container</li>
+  <li><code class="highlighter-rouge">network</code> <em>string</em> Which network to connect the container to</li>
+  <li><code class="highlighter-rouge">mounts</code> <em>object[]</em> File and directory bind mounts to mount into the container
+    <ul>
+      <li>Should specify a <code class="highlighter-rouge">source</code> key and a <code class="highlighter-rouge">target</code> key, and an optional <code class="highlighter-rouge">read-only</code> key</li>
+    </ul>
+  </li>
+</ul>
+
+<p>These options map directly to the options of the <code class="highlighter-rouge">docker run</code> command, for further details see the <a href="https://docs.docker.com/engine/reference/commandline/run/"><code class="highlighter-rouge">docker run</code> documentation</a></p>
+
+<h5 id="examples">Examples</h5>
+<p>To run a container using the busybox image and connect a shell to it, use:</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">conf</span><span class="pi">:</span>
+  <span class="na">commands</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">docker</span>
+      <span class="na">connect</span><span class="pi">:</span> <span class="no">true</span>
+      <span class="na">spec</span><span class="pi">:</span>
+        <span class="na">run</span><span class="pi">:</span>
+          <span class="na">image</span><span class="pi">:</span> <span class="s">docker.io/library/busybox:latest</span>
+</code></pre></div></div>
+
+<p>To run a container using the nginx image exposing port 80, use:</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">conf</span><span class="pi">:</span>
+  <span class="na">commands</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">docker</span>
+      <span class="na">spec</span><span class="pi">:</span>
+        <span class="na">run</span><span class="pi">:</span>
+          <span class="na">image</span><span class="pi">:</span> <span class="s">docker.io/library/nginx:alpine</span>
+          <span class="na">ports</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="s">80:80</span>
+</code></pre></div></div>
+
+<p>To mount a file from the host filesystem into a container on a scenario with a <code class="highlighter-rouge">qemu</code> executor use:</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">executor</span><span class="pi">:</span>
+  <span class="na">type</span><span class="pi">:</span> <span class="s">qemu</span>
+  <span class="na">conf</span><span class="pi">:</span>
+    <span class="na">ram</span><span class="pi">:</span> <span class="m">256</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">docker.io/library/docker:dind</span>
+    <span class="na">args</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">dockerd</span>
+      <span class="pi">-</span> <span class="s">--tls=false</span>
+      <span class="pi">-</span> <span class="s">--host=0.0.0.0:2375</span>
+<span class="na">conf</span><span class="pi">:</span>
+  <span class="na">commands</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">docker</span>
+      <span class="na">spec</span><span class="pi">:</span>
+        <span class="na">run</span><span class="pi">:</span>
+          <span class="na">image</span><span class="pi">:</span> <span class="s">docker.io/library/alpine:latest</span>
+          <span class="na">mounts</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">source</span><span class="pi">:</span> <span class="s">/flag1</span>
+              <span class="na">target</span><span class="pi">:</span> <span class="s">/flag</span>
+</code></pre></div></div>
+
+<h4 id="exec">Exec</h4>
+
+<p>Execute a command in an already running container. Exec commands should specify the following options in the <code class="highlighter-rouge">conf.commands.spec.exec</code> key:</p>
+<ul>
+  <li><code class="highlighter-rouge">name</code> <em>string</em> The name of the container in which to execute the command</li>
+  <li><code class="highlighter-rouge">cmd</code> <em>string</em> The command to execute
+    <ul>
+      <li>The command is executed within the <code class="highlighter-rouge">/bin/sh</code> shell</li>
+    </ul>
+  </li>
+</ul>
+
+<p>For example, to execute the <code class="highlighter-rouge">/bin/id</code> command in a previously started container called <code class="highlighter-rouge">main</code> use:</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">conf</span><span class="pi">:</span>
+  <span class="na">commands</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">docker</span>
+      <span class="na">spec</span><span class="pi">:</span>
+        <span class="na">run</span><span class="pi">:</span>
+          <span class="na">image</span><span class="pi">:</span> <span class="s">docker.io/library/busybox:latest</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s">main</span>
+    <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">docker</span>
+      <span class="na">spec</span><span class="pi">:</span>
+        <span class="na">exec</span><span class="pi">:</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s">main</span>
+          <span class="na">cmd</span><span class="pi">:</span> <span class="s">/bin/id</span>
+</code></pre></div></div>
+
+  </div>
+
+  <div class="footer">
+    <a href="/">Back to index</a>
+  </div>
+</div>
+
+
+
+      <footer class="site-footer">
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

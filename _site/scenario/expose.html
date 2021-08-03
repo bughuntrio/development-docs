@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+  </head>
+  <body>
+    <header class="page-header" role="banner">
+      <a href="/">
+      <h1 class="project-name">BugHuntr.io Devdocs</h1>
+      <h2 class="project-tagline"></h2>
+      </a>
+    </header>
+    <main id="content" class="main-content" role="main">
+      <div class="subpage">
+  <div class="header">
+    <a href="/">Back to index</a>
+  </div>
+
+  <div class="content">
+    <h2 id="metadata---conf-expose">Metadata - Conf expose</h2>
+
+<p>External network services are exposed from a scenario via the <code class="highlighter-rouge">conf.expose</code> configuration.</p>
+
+<p>The expose section is used for exposing ports from the scenario, it expects an array of objects with the following keys:</p>
+<ul>
+  <li><code class="highlighter-rouge">port</code> <em>int</em> The port number exposed from the scenario</li>
+  <li><code class="highlighter-rouge">direct</code> <em>bool</em> Whether the port should be directly accessible, or accessible through a reverse proxy on standard web ports <strong>Default:</strong> false</li>
+  <li><code class="highlighter-rouge">domain</code> <em>string</em> The subdomain name to use when proxying the exposed port <strong>Default:</strong> None</li>
+</ul>
+
+<h3 id="port-mapping">Port mapping</h3>
+<p>Ports specified in the <code class="highlighter-rouge">expose</code> configuration should map to ports exposed from the scenario.</p>
+
+<p>In most cases, when exposing HTTP services the <code class="highlighter-rouge">direct</code> parameter should be left unset. In this default case, the HTTP service will be accessible via the standard web ports (80/tcp and 443/tcp) routed though a reverse proxy.</p>
+
+<p>Where the <code class="highlighter-rouge">direct</code> parameter is set, the port numbers specified will not necessarily map to the ports the user will connect over. As multiple scenarios execute on a host at once, port mapping is performed to ensure there is no clashes of port numbers. For example, with an exposed port of <code class="highlighter-rouge">8001/tcp</code> from the scenario, the user may end up connecting to the service over the external port <code class="highlighter-rouge">31029/tcp</code>.</p>
+
+<h3 id="tls-certificates">TLS certificates</h3>
+<p>Where HTTP services are access via the reverse proxy (e.g. when <code class="highlighter-rouge">direct</code> is <code class="highlighter-rouge">false</code>), valid TLS certificates for the scenario domain will be provided from the reverse proxy.</p>
+
+<h3 id="udp-services">UDP services</h3>
+<p>UDP services are not currently supported. However, this feature is in our development plan. If you require this feature for your scenario please contact us via <a href="mailto:support@bughuntr.io">support@bughuntr.io</a>.</p>
+
+<h3 id="examples">Examples</h3>
+
+<h4 id="http-service">HTTP service</h4>
+<p>The following configuration will allow a scenario HTTP service to be accessed via HTTP/S on the standard web ports (80/tcp and 443/tcp) via the reverse proxy.</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">conf</span><span class="pi">:</span>
+  <span class="na">expose</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">port</span><span class="pi">:</span> <span class="m">80</span>
+</code></pre></div></div>
+
+<h4 id="tcp-service">TCP service</h4>
+<p>The following configuration will directly expose a TCP service from the scenario, bypassing the reverse HTTP proxy</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">conf</span><span class="pi">:</span>
+  <span class="na">expose</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">port</span><span class="pi">:</span> <span class="m">9001</span>
+    <span class="na">direct</span><span class="pi">:</span> <span class="no">true</span>
+</code></pre></div></div>
+
+<h4 id="adding-an-extra-subdomain">Adding an extra subdomain</h4>
+<p>The following configuration will add a subdomain <code class="highlighter-rouge">dev</code> which resolves to the IP address of the scenario, but without adding any additional exposed services.</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">conf</span><span class="pi">:</span>
+  <span class="na">expose</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">port</span><span class="pi">:</span> <span class="m">80</span>
+  <span class="pi">-</span> <span class="na">domain</span><span class="pi">:</span> <span class="s">dev</span>
+</code></pre></div></div>
+
+  </div>
+
+  <div class="footer">
+    <a href="/">Back to index</a>
+  </div>
+</div>
+
+
+
+      <footer class="site-footer">
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>
