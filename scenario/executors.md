@@ -42,6 +42,7 @@ conf:
       path: /root_flag
 ```
 
+For more details on flags see [Conf flags](/scenario/flags.html).
 
 ### QEMU executor
 
