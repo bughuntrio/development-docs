@@ -13,6 +13,7 @@ The state API has the following endpoints:
   * The data will be served with the `Content-Type` that the value was `PUT` with.
   * `GET`ting from this endpoint will return the data directly.
   * Only text should be stored in this store, an attempt to store binary data will respond with a 500 error.
+  * This store has a hard limit of 32KiB of data per key, if you require more space than this use the `document` store, attempting to add more data than this will result in a 400 response.
 * [`GET`, `PUT`, `DELETE`] `/api/v1/scenario/state/document/<key>` - Store / retrieve data in the `document` store.
   * The data will be served with the `Content-Type` that the value was `PUT` with.
   * `GET`ting from this endpoint will respond with a 302 redirect to the S3 bucket location of the stored document.
