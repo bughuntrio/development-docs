@@ -19,7 +19,14 @@ In most cases, when exposing HTTP services the `direct` parameter should be left
 Where the `direct` parameter is set, the port numbers specified will not necessarily map to the ports the user will connect over. As multiple scenarios execute on a host at once, port mapping is performed to ensure there is no clashes of port numbers. For example, with an exposed port of `8001/tcp` from the scenario, the user may end up connecting to the service over the external port `31029/tcp`.
 
 ### TLS certificates
-Where HTTP services are access via the reverse proxy (e.g. when `direct` is `false`), valid TLS certificates for the scenario domain will be provided from the reverse proxy.
+Where HTTP services are accessed via the reverse proxy (e.g. when `direct` is `false`), valid TLS certificates for the scenario domain will be provided from the reverse proxy. The TLS certificate provided can be used for one level of subdomain below the automatically generated scenario domain. For example, with the following expose configuration, the domains `<scenario_domain>` and `dev.<scenario_domain>` will both have valid TLS certificates:
+```yaml
+conf:
+  expose:
+  - port: 80
+  - port: 80
+    domain: dev
+```
 
 ### UDP services
 UDP services are not currently supported. However, this feature is in our development plan. If you require this feature for your scenario please contact us via [support@bughuntr.io](mailto:support@bughuntr.io).
@@ -31,7 +38,7 @@ The following configuration will allow a scenario HTTP service to be accessed vi
 ```yaml
 conf:
   expose:
-  - port: 80
+  - port: 9001
 ```
 
 #### TCP service
@@ -41,6 +48,17 @@ conf:
   expose:
   - port: 9001
     direct: true
+```
+
+#### Two domain proxying to the same port
+The following configuration will provide virtual host access to the domains `www.<scenario_domain>` and `dev.<scenario_domain>` with valid TLS certificates, on the standard web ports (80/tcp and 443/tcp) via the reverse proxy.
+```yaml
+conf:
+  expose:
+  - port: 9001
+    domain: www
+  - port: 9001
+    domain: dev
 ```
 
 #### Adding an extra subdomain
