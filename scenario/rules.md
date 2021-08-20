@@ -8,7 +8,7 @@ Whilst we work to provide the most flexible environment possible, we place the f
 
 * Scenarios should not require excessive brute force, fuzzing or automation.
   * Users are rate-limited to 20 requests per second from a single IP address
-  * As such, we recommend any fuzzing can be completed with standard wordlists (*In future we may recommend specific wordlists*)
+  * As such, we recommend any fuzzing can be completed with standard wordlists
 
 * All web services should implement a `_ping` endpoint returning a 200 response with the `Access-Control-Allow-Origin: *` HTTP header set. If this is not possible, set the `display.forceload` metadata value to `true`, e.g.
 ```yaml
