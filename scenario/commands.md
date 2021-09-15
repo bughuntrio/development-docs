@@ -32,6 +32,7 @@ Run a new container. Run commands can specify the following options in the `conf
 * `name` *string* The name of the container
 * `ports` *string[]* An array of `<host port>:<container port>` mapping pairs to map a container port to a host port
   * See [Conf expose](/scenario/expose.html) for further details
+* `user` *string* The username of the user to run as
 * `entrypoint` *string[]* The entrypoint of the container **Default:** The entrypoint specified by the image
 * `cmd` *string[]* The command to run in the container entrypoint **Default:** The command specified by the image
 * `env` *string[]* The environment of the container **Default:** The environment specified by the image
@@ -104,6 +105,8 @@ conf:
 
 Execute a command in an already running container. Exec commands should specify the following options in the `conf.commands.spec.exec` key:
 * `name` *string* The name of the container in which to execute the command
+* `user` *string* The username of the user to run as
+* `working-dir` *string* The working directory of the container **Default:** The working directory specified by the image
 * `cmd` *string* The command to execute
   * The command is executed within the `/bin/sh` shell
 
